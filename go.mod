@@ -1,8 +1,9 @@
-module github.com/Ubivius/microservice-template
+module github.com/Ubivius/microservice-authentication
 
 go 1.15
 
 require (
+	github.com/Ubivius/microservice-template v0.0.0-20210302192838-6219b221528a
 	github.com/go-playground/universal-translator v0.17.0 // indirect
 	github.com/go-playground/validator v9.31.0+incompatible
 	github.com/gorilla/mux v1.8.0

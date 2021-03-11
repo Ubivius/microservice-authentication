@@ -1,3 +1,5 @@
+github.com/Ubivius/microservice-template v0.0.0-20210302192838-6219b221528a h1:eKb/tZiCZTzMiW5fTLqDCTuUCcLOh8nkJhmB8iIb3bg=
+github.com/Ubivius/microservice-template v0.0.0-20210302192838-6219b221528a/go.mod h1:OmSvFC/gsR+TKBzhFg5uwGjvrQqdvnm0q/C0WV8uTwU=
 github.com/benbjohnson/clock v1.0.3/go.mod h1:bGMdMPoPVvcYyt1gHDf4J2KE153Yf9BuiUKYMaxlTDM=
 github.com/davecgh/go-spew v1.1.0 h1:ZDRjVQ15GmhC3fiQ8ni8+OwkZQO4DARzQgrnXU1Liz8=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
