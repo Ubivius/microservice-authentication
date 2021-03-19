@@ -27,6 +27,7 @@ func (authHandler *AuthHandler) SignIn(responseWriter http.ResponseWriter, reque
 	data.Set("username", username)
 	data.Set("password", password)
 
+	//SignIn
 	req, err := http.NewRequest("POST", urlPath, strings.NewReader(data.Encode()))
 	if err != nil {
 		panic(err)
@@ -41,23 +42,36 @@ func (authHandler *AuthHandler) SignIn(responseWriter http.ResponseWriter, reque
 
 	body, _ := ioutil.ReadAll(resp.Body)
 	access_token := extractValue(string(body), "access_token")
+	log.Println(string(body))
 
 	claims := extractClaims(access_token)
-	// do something with decoded claims
-	/*for key, val := range claims {
-		log.Print(val)
-		log.Print(key)
-	}*/
-	log.Print(claims["sub"])
 	userId := claims["sub"]
+	log.Println(userId)
 
-	player := map[string]string{"userId": string(userId), "access_token": access_token}
-	playerJson, _ := json.Marshal(player)
+	//Get user data
+	urlPath = "http://localhost:9091/users/" + "1"
 
-	err = json.NewEncoder(responseWriter).Encode(playerJson)
+	req, err = http.NewRequest("GET", urlPath, nil)
 	if err != nil {
-		http.Error(responseWriter, "Unable to complete SignIn", http.StatusInternalServerError)
+		panic(err)
 	}
+	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+	client = &http.Client{}
+	resp, err = client.Do(req)
+	if err != nil {
+		panic(err)
+	}
+	defer resp.Body.Close()
+
+	body, _ = ioutil.ReadAll(resp.Body)
+
+	jsonBody := map[string]string{}
+	err = json.Unmarshal(body, &jsonBody)
+	jsonBody["accessToken"] = access_token
+	player, _ := json.Marshal(jsonBody)
+
+	log.Println(string(player))
+	responseWriter.Write(player)
 }
 
 func (authHandler *AuthHandler) SignUp(responseWriter http.ResponseWriter, request *http.Request) {
@@ -80,7 +94,6 @@ func (authHandler *AuthHandler) SignUp(responseWriter http.ResponseWriter, reque
 
 	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("Authorization", "Bearer "+admin_token)
-	log.Println(req.Header)
 	client := &http.Client{}
 	resp, err := client.Do(req)
 
@@ -90,15 +103,53 @@ func (authHandler *AuthHandler) SignUp(responseWriter http.ResponseWriter, reque
 	defer resp.Body.Close()
 
 	log.Println("response Status:", resp.Status)
-	body, err := ioutil.ReadAll(resp.Body)
-	access_token := extractValue(string(body), "access_token")
-	log.Println("response Body:", string(body))
 
-	player := map[string]string{"username": username, "access_token": access_token}
-	playerJson, _ := json.Marshal(player)
-
-	err = json.NewEncoder(responseWriter).Encode(playerJson)
-	if err != nil {
-		http.Error(responseWriter, "Unable to complete SignIn", http.StatusInternalServerError)
+	if resp.Status == "409 Conflict" {
+		responseWriter.WriteHeader(http.StatusConflict)
+		responseWriter.Write([]byte("409 Conflict"))
+		return
 	}
+
+	responseWriter.WriteHeader(http.StatusCreated)
+	responseWriter.Write([]byte("201 Created"))
+
+	//Get new user ID
+	urlPath = "http://localhost:8080/auth/admin/realms/ubivius/users?username=" + username
+
+	req, err = http.NewRequest("GET", urlPath, nil)
+	if err != nil {
+		panic(err)
+	}
+	req.Header.Add("Authorization", "Bearer "+admin_token)
+	client = &http.Client{}
+	resp, err = client.Do(req)
+	if err != nil {
+		panic(err)
+	}
+	defer resp.Body.Close()
+
+	body, _ := ioutil.ReadAll(resp.Body)
+	playerId := extractValue(string(body), "id")
+
+	//Post new user
+	urlPath = "http://localhost:9091/users"
+
+	jsonBody := map[string]string{}
+	err = json.Unmarshal(jsonValues, &jsonBody)
+	jsonBody["id"] = playerId
+	newPlayer, _ := json.Marshal(jsonBody)
+
+	req, err = http.NewRequest("POST", urlPath, bytes.NewBuffer(newPlayer))
+	if err != nil {
+		panic(err)
+	}
+	req.Header.Add("Content-Type", "application/json")
+	client = &http.Client{}
+	resp, err = client.Do(req)
+	if err != nil {
+		panic(err)
+	}
+	defer resp.Body.Close()
+
+	body, _ = ioutil.ReadAll(resp.Body)
 }
