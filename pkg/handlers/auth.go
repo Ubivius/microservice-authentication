@@ -1,4 +1,4 @@
-package data
+package handlers
 
 import (
 	"io/ioutil"
@@ -11,10 +11,7 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
-// KeyProduct is a key used for the Product object inside context
-type KeyProduct struct{}
-
-// AuthHandler contains the items common to all product handler functions
+// AuthHandler contains the items common to all auth handler functions
 type AuthHandler struct {
 	logger *log.Logger
 }
@@ -25,14 +22,14 @@ func NewAuthHandler(logger *log.Logger) *AuthHandler {
 }
 
 func GetAdminAccessToken() string {
-	urlPath := "http://localhost:8080/auth/realms/ubivius/protocol/openid-connect/token"
+	adminAccessPath := "http://localhost:8080/auth/realms/ubivius/protocol/openid-connect/token"
 
 	data := url.Values{}
 	data.Set("client_id", "ubivius-client")
 	data.Set("grant_type", "client_credentials")
 	data.Set("client_secret", "7d109d2b-524f-4351-bfda-44ecad030eef")
 
-	req, err := http.NewRequest("POST", urlPath, strings.NewReader(data.Encode()))
+	req, err := http.NewRequest("POST", adminAccessPath, strings.NewReader(data.Encode()))
 	if err != nil {
 		panic(err)
 	}
@@ -62,6 +59,7 @@ func ExtractValue(body string, key string) string {
 	return strings.ReplaceAll(keyValMatch[1], "\"", "")
 }
 
+//Not used yet, but could be usefull
 func ExtractClaims(tokenString string) jwt.MapClaims {
 	claims := jwt.MapClaims{}
 	_, err := jwt.ParseWithClaims(tokenString, claims, nil)
