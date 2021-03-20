@@ -63,11 +63,17 @@ func (authHandler *AuthHandler) SignIn(responseWriter http.ResponseWriter, reque
 
 	jsonBody := map[string]string{}
 	err = json.Unmarshal(body, &jsonBody)
+	if err != nil {
+		panic(err)
+	}
 	jsonBody["accessToken"] = access_token
 	player, _ := json.Marshal(jsonBody)
 
 	log.Println(string(player))
-	responseWriter.Write(player)
+	_, err = responseWriter.Write(player)
+	if err != nil {
+		panic(err)
+	}
 }
 
 // SignUp will register a new user in keycloak and in our user database
@@ -103,12 +109,18 @@ func (authHandler *AuthHandler) SignUp(responseWriter http.ResponseWriter, reque
 
 	if resp.Status == "409 Conflict" {
 		responseWriter.WriteHeader(http.StatusConflict)
-		responseWriter.Write([]byte("409 Conflict"))
+		_, err = responseWriter.Write([]byte("409 Conflict"))
+		if err != nil {
+			panic(err)
+		}
 		return
 	}
 
 	responseWriter.WriteHeader(http.StatusCreated)
-	responseWriter.Write([]byte("201 Created"))
+	_, err = responseWriter.Write([]byte("201 Created"))
+	if err != nil {
+		panic(err)
+	}
 
 	//Get new user ID
 	userIdPath := "http://localhost:8080/auth/admin/realms/ubivius/users?username=" + username
@@ -152,5 +164,8 @@ func (authHandler *AuthHandler) SignUp(responseWriter http.ResponseWriter, reque
 	defer resp.Body.Close()
 
 	responseWriter.WriteHeader(http.StatusOK)
-	responseWriter.Write([]byte("200 OK"))
+	_, err = responseWriter.Write([]byte("200 OK"))
+	if err != nil {
+		panic(err)
+	}
 }
