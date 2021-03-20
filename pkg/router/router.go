@@ -16,7 +16,6 @@ func New(authHandler *handlers.AuthHandler, logger *log.Logger) *mux.Router {
 	postRouter := router.Methods(http.MethodPost).Subrouter()
 	postRouter.HandleFunc("/signin", authHandler.SignIn)
 	postRouter.HandleFunc("/signup", authHandler.SignUp)
-	//postRouter.Use(authHandler.MiddlewareAuthValidation)
 
 	return router
 }
