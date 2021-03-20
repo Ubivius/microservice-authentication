@@ -10,14 +10,14 @@ import (
 	"strings"
 )
 
-// AddProduct creates a new product from the received JSON
+// SignIn will fetch the acces token from Keycloak and return user data
 func (authHandler *AuthHandler) SignIn(responseWriter http.ResponseWriter, request *http.Request) {
-	urlPath := "http://localhost:8080/auth/realms/ubivius/protocol/openid-connect/token"
+	signinPath := "http://localhost:8080/auth/realms/ubivius/protocol/openid-connect/token"
 
 	requestbody, _ := ioutil.ReadAll(request.Body)
 
-	username := extractValue(string(requestbody), "username")
-	password := extractValue(string(requestbody), "password")
+	username := ExtractValue(string(requestbody), "username")
+	password := ExtractValue(string(requestbody), "password")
 
 	data := url.Values{}
 	data.Set("client_id", "ubivius-client")
@@ -28,7 +28,7 @@ func (authHandler *AuthHandler) SignIn(responseWriter http.ResponseWriter, reque
 	data.Set("password", password)
 
 	//SignIn
-	req, err := http.NewRequest("POST", urlPath, strings.NewReader(data.Encode()))
+	req, err := http.NewRequest("POST", signinPath, strings.NewReader(data.Encode()))
 	if err != nil {
 		panic(err)
 	}
@@ -41,17 +41,13 @@ func (authHandler *AuthHandler) SignIn(responseWriter http.ResponseWriter, reque
 	defer resp.Body.Close()
 
 	body, _ := ioutil.ReadAll(resp.Body)
-	access_token := extractValue(string(body), "access_token")
+	access_token := ExtractValue(string(body), "access_token")
 	log.Println(string(body))
 
-	claims := extractClaims(access_token)
-	userId := claims["sub"]
-	log.Println(userId)
-
 	//Get user data
-	urlPath = "http://localhost:9091/users/" + "1"
+	userPath := "http://localhost:9091/users/" + "1"
 
-	req, err = http.NewRequest("GET", urlPath, nil)
+	req, err = http.NewRequest("GET", userPath, nil)
 	if err != nil {
 		panic(err)
 	}
@@ -74,19 +70,20 @@ func (authHandler *AuthHandler) SignIn(responseWriter http.ResponseWriter, reque
 	responseWriter.Write(player)
 }
 
+// SignUp will register a new user in keycloak and in our user database
 func (authHandler *AuthHandler) SignUp(responseWriter http.ResponseWriter, request *http.Request) {
-	urlPath := "http://localhost:8080/auth/admin/realms/ubivius/users"
+	newUserPath := "http://localhost:8080/auth/admin/realms/ubivius/users"
 
 	requestbody, _ := ioutil.ReadAll(request.Body)
-	username := extractValue(string(requestbody), "username")
-	firstName := extractValue(string(requestbody), "firstName")
-	lastName := extractValue(string(requestbody), "lastName")
-	email := extractValue(string(requestbody), "email")
+	username := ExtractValue(string(requestbody), "username")
+	firstName := ExtractValue(string(requestbody), "firstName")
+	lastName := ExtractValue(string(requestbody), "lastName")
+	email := ExtractValue(string(requestbody), "email")
 
 	values := map[string]string{"firstName": firstName, "lastName": lastName, "email": email, "username": username, "enabled": "true"}
 	jsonValues, _ := json.Marshal(values)
 
-	req, err := http.NewRequest("POST", urlPath, bytes.NewBuffer(jsonValues))
+	req, err := http.NewRequest("POST", newUserPath, bytes.NewBuffer(jsonValues))
 	if err != nil {
 		panic(err)
 	}
@@ -114,9 +111,9 @@ func (authHandler *AuthHandler) SignUp(responseWriter http.ResponseWriter, reque
 	responseWriter.Write([]byte("201 Created"))
 
 	//Get new user ID
-	urlPath = "http://localhost:8080/auth/admin/realms/ubivius/users?username=" + username
+	userIdPath := "http://localhost:8080/auth/admin/realms/ubivius/users?username=" + username
 
-	req, err = http.NewRequest("GET", urlPath, nil)
+	req, err = http.NewRequest("GET", userIdPath, nil)
 	if err != nil {
 		panic(err)
 	}
@@ -129,17 +126,20 @@ func (authHandler *AuthHandler) SignUp(responseWriter http.ResponseWriter, reque
 	defer resp.Body.Close()
 
 	body, _ := ioutil.ReadAll(resp.Body)
-	playerId := extractValue(string(body), "id")
+	playerId := ExtractValue(string(body), "id")
 
 	//Post new user
-	urlPath = "http://localhost:9091/users"
+	addUserPath := "http://localhost:9091/users"
 
 	jsonBody := map[string]string{}
 	err = json.Unmarshal(jsonValues, &jsonBody)
+	if err != nil {
+		panic(err)
+	}
 	jsonBody["id"] = playerId
 	newPlayer, _ := json.Marshal(jsonBody)
 
-	req, err = http.NewRequest("POST", urlPath, bytes.NewBuffer(newPlayer))
+	req, err = http.NewRequest("POST", addUserPath, bytes.NewBuffer(newPlayer))
 	if err != nil {
 		panic(err)
 	}
@@ -151,5 +151,6 @@ func (authHandler *AuthHandler) SignUp(responseWriter http.ResponseWriter, reque
 	}
 	defer resp.Body.Close()
 
-	body, _ = ioutil.ReadAll(resp.Body)
+	responseWriter.WriteHeader(http.StatusOK)
+	responseWriter.Write([]byte("200 OK"))
 }
