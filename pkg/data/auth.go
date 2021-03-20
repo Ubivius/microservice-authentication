@@ -1,4 +1,4 @@
-package handlers
+package data
 
 import (
 	"io/ioutil"
@@ -46,7 +46,7 @@ func GetAdminAccessToken() string {
 
 	log.Println("Admintoken response Status:", resp.Status)
 	body, _ := ioutil.ReadAll(resp.Body)
-	admin_token := extractValue(string(body), "access_token")
+	admin_token := ExtractValue(string(body), "access_token")
 	return admin_token
 }
 
@@ -54,7 +54,7 @@ func GetAdminAccessToken() string {
 // body - the JSON-response as a string. Usually retrieved via the request body
 // key - the key for which the value should be extracted
 // returns - the value for the given key
-func extractValue(body string, key string) string {
+func ExtractValue(body string, key string) string {
 	keystr := "\"" + key + "\":[^,;\\]}]*"
 	r, _ := regexp.Compile(keystr)
 	match := r.FindString(body)
@@ -62,11 +62,11 @@ func extractValue(body string, key string) string {
 	return strings.ReplaceAll(keyValMatch[1], "\"", "")
 }
 
-func extractClaims(tokenString string) jwt.MapClaims {
+func ExtractClaims(tokenString string) jwt.MapClaims {
 	claims := jwt.MapClaims{}
 	_, err := jwt.ParseWithClaims(tokenString, claims, nil)
 	if err != nil {
-		log.Println("Error while getting claims")
+		log.Println("Error while getting claims: ", err)
 	}
 	return claims
 }
