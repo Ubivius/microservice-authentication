@@ -45,7 +45,10 @@ func (authHandler *AuthHandler) SignIn(responseWriter http.ResponseWriter, reque
 	body, _ := ioutil.ReadAll(resp.Body)
 	access_token := ExtractValue(string(body), "access_token")
 	//Get user data
-	userPath := "http://localhost:9091/users/" + "1"
+	claims := ExtractClaims(access_token)
+	userId := claims["sub"]
+
+	userPath := "http://localhost:9091/users/" + userId.(string)
 
 	req, err = http.NewRequest("GET", userPath, nil)
 	if err != nil {
