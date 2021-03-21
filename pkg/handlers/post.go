@@ -18,6 +18,8 @@ func (authHandler *AuthHandler) SignIn(responseWriter http.ResponseWriter, reque
 
 	username := ExtractValue(string(requestbody), "username")
 	password := ExtractValue(string(requestbody), "password")
+	log.Println(username)
+	log.Println(password)
 
 	data := url.Values{}
 	data.Set("client_id", "ubivius-client")
@@ -42,8 +44,6 @@ func (authHandler *AuthHandler) SignIn(responseWriter http.ResponseWriter, reque
 
 	body, _ := ioutil.ReadAll(resp.Body)
 	access_token := ExtractValue(string(body), "access_token")
-	log.Println(string(body))
-
 	//Get user data
 	userPath := "http://localhost:9091/users/" + "1"
 
@@ -70,6 +70,7 @@ func (authHandler *AuthHandler) SignIn(responseWriter http.ResponseWriter, reque
 	player, _ := json.Marshal(jsonBody)
 
 	log.Println(string(player))
+	responseWriter.WriteHeader(http.StatusOK)
 	_, err = responseWriter.Write(player)
 	if err != nil {
 		panic(err)
