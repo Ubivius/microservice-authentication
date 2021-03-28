@@ -18,9 +18,6 @@ func (authHandler *AuthHandler) SignIn(responseWriter http.ResponseWriter, reque
 
 	username := ExtractValue(string(requestbody), "username")
 	password := ExtractValue(string(requestbody), "password")
-	log.Println(username)
-	log.Println(password)
-
 	data := url.Values{}
 	data.Set("client_id", "ubivius-client")
 	data.Set("grant_type", "password")
@@ -167,7 +164,6 @@ func (authHandler *AuthHandler) SignUp(responseWriter http.ResponseWriter, reque
 	}
 	defer resp.Body.Close()
 
-	responseWriter.WriteHeader(http.StatusOK)
 	_, err = responseWriter.Write([]byte("200 OK"))
 	if err != nil {
 		panic(err)
