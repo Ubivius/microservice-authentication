@@ -83,6 +83,8 @@ func (authHandler *AuthHandler) SignUp(responseWriter http.ResponseWriter, reque
 
 	requestbody, _ := ioutil.ReadAll(request.Body)
 	username := ExtractValue(string(requestbody), "username")
+	password := ExtractValue(string(requestbody), "password")
+	log.Println(string(password))
 	firstName := ExtractValue(string(requestbody), "firstName")
 	lastName := ExtractValue(string(requestbody), "lastName")
 	email := ExtractValue(string(requestbody), "email")
@@ -141,6 +143,25 @@ func (authHandler *AuthHandler) SignUp(responseWriter http.ResponseWriter, reque
 	body, _ := ioutil.ReadAll(resp.Body)
 	playerId := ExtractValue(string(body), "id")
 
+	//Set Password
+	userSetPasswordPath := "http://localhost:8080/auth/admin/realms/ubivius/users/" + playerId + "/reset-password"
+
+	values = map[string]string{"type": "password", "temporary": "false", "value": password}
+	jsonValues, _ = json.Marshal(values)
+
+	req, err = http.NewRequest("PUT", userSetPasswordPath, bytes.NewBuffer(jsonValues))
+	if err != nil {
+		panic(err)
+	}
+	req.Header.Add("Authorization", "Bearer "+admin_token)
+	req.Header.Add("Content-Type", "application/json")
+	client = &http.Client{}
+	resp, err = client.Do(req)
+	if err != nil {
+		panic(err)
+	}
+	defer resp.Body.Close()
+
 	//Post new user
 	addUserPath := "http://localhost:9091/users"
 
@@ -163,9 +184,4 @@ func (authHandler *AuthHandler) SignUp(responseWriter http.ResponseWriter, reque
 		panic(err)
 	}
 	defer resp.Body.Close()
-
-	_, err = responseWriter.Write([]byte("200 OK"))
-	if err != nil {
-		panic(err)
-	}
 }
