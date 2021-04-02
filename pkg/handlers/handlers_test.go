@@ -15,7 +15,7 @@ func NewTestLogger() *log.Logger {
 }
 
 func TestSignIn(t *testing.T) {
-	bodyReader := strings.NewReader(`{"username": "sickboy", "password": "ubi123"}`)
+	bodyReader := strings.NewReader(`{"username":"sickboy","password":"ubi123"}`)
 
 	request := httptest.NewRequest(http.MethodPost, "/signin", bodyReader)
 	request.Header.Add("Content-Type", "application/json")
