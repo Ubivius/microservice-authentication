@@ -25,7 +25,6 @@ func (authHandler *AuthHandler) SignIn(responseWriter http.ResponseWriter, reque
 	userBody := data.GetUser(userId.(string))
 	player := data.AddValueToList(userBody, "accessToken", access_token)
 
-	log.Println(string(player))
 	responseWriter.WriteHeader(http.StatusOK)
 	_, err := responseWriter.Write(player)
 	if err != nil {
