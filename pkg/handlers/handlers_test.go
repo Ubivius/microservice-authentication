@@ -15,6 +15,10 @@ func NewTestLogger() *log.Logger {
 }
 
 func TestSignInIntegration(t *testing.T) {
+	if testing.Short() {
+		t.Skip("Test skipped during unit tests")
+	}
+
 	bodyReader := strings.NewReader(`{"username":"sickboy","password":"ubi123"}`)
 
 	request := httptest.NewRequest(http.MethodPost, "/signin", bodyReader)
