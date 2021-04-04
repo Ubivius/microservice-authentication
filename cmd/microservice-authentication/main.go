@@ -8,8 +8,8 @@ import (
 	"os/signal"
 	"time"
 
-	"github.com/Ubivius/microservice-template/pkg/handlers"
-	"github.com/Ubivius/microservice-template/pkg/router"
+	"github.com/Ubivius/microservice-authentication/pkg/handlers"
+	"github.com/Ubivius/microservice-authentication/pkg/router"
 	"go.opentelemetry.io/otel/exporters/stdout"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 )
@@ -34,10 +34,10 @@ func main() {
 	defer func() { _ = tracerProvider.Shutdown(ctx) }()
 
 	// Creating handlers
-	productHandler := handlers.NewProductsHandler(logger)
+	authHandler := handlers.NewAuthHandler(logger)
 
 	// Router setup
-	r := router.New(productHandler, logger)
+	r := router.New(authHandler, logger)
 
 	// Server setup
 	server := &http.Server{
