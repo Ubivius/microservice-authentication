@@ -14,7 +14,7 @@ func NewTestLogger() *log.Logger {
 	return log.New(os.Stdout, "Tests", log.LstdFlags)
 }
 
-func TestSignIn(t *testing.T) {
+func TestSignInIntegration(t *testing.T) {
 	bodyReader := strings.NewReader(`{"username":"sickboy","password":"ubi123"}`)
 
 	request := httptest.NewRequest(http.MethodPost, "/signin", bodyReader)
