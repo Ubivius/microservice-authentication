@@ -1,4 +1,4 @@
-# Microservice-template Helm Charts
+# microservice-authentication Helm Charts
 
 ## Usage
 
@@ -10,7 +10,7 @@ Once Helm is set up properly, add the repo as follows:
 ## Get Repo Info
 
 ```console
-helm repo add microservice-template <path to chartmuseum or ArtifactHub>
+helm repo add microservice-authentication <path to chartmuseum or ArtifactHub>
 helm repo update
 ```
 
@@ -18,22 +18,22 @@ _See [helm repo](https://helm.sh/docs/helm/helm_repo/) for command documentation
 
 ## Installing the Chart
 
-To install the chart directly from the Github repo with the release name `microservice-template`:
+To install the chart directly from the Github repo with the release name `microservice-authentication`:
 
 ```console
-helm install microservice-template chart/ --values chart/values.yaml
+helm install microservice-authentication chart/ --values chart/values.yaml
 ```
 
-To install the chart from ArtifactHub with the release name `microservice-template`:
+To install the chart from ArtifactHub with the release name `microservice-authentication`:
 
 ```console
-helm install microservice-template <org name>/microservice-template --version <version> 
+helm install microservice-authentication <org name>/microservice-authentication --version <version> 
 ```
 
 ## Uninstalling the Chart
 
-To uninstall/delete the microservice-template deployment:
+To uninstall/delete the microservice-authentication deployment:
 
 ```console
-helm delete microservice-template
+helm delete microservice-authentication
 ```

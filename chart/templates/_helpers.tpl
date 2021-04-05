@@ -2,7 +2,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "microservice-template.name" -}}
+{{- define "microservice-authentication.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
@@ -11,7 +11,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "microservice-template.fullname" -}}
+{{- define "microservice-authentication.fullname" -}}
 {{- if .Values.fullnameOverride -}}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
@@ -27,16 +27,16 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "microservice-template.chart" -}}
+{{- define "microservice-authentication.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{/*
 Common labels
 */}}
-{{- define "microservice-template.labels" -}}
-helm.sh/chart: {{ include "microservice-template.chart" . }}
-{{ include "microservice-template.selectorLabels" . }}
+{{- define "microservice-authentication.labels" -}}
+helm.sh/chart: {{ include "microservice-authentication.chart" . }}
+{{ include "microservice-authentication.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -46,17 +46,17 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Selector labels
 */}}
-{{- define "microservice-template.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "microservice-template.name" . }}
+{{- define "microservice-authentication.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "microservice-authentication.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
 
 {{/*
 Create the name of the service account to use
 */}}
-{{- define "microservice-template.serviceAccountName" -}}
+{{- define "microservice-authentication.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create -}}
-    {{ default (include "microservice-template.fullname" .) .Values.serviceAccount.name }}
+    {{ default (include "microservice-authentication.fullname" .) .Values.serviceAccount.name }}
 {{- else -}}
     {{ default "default" .Values.serviceAccount.name }}
 {{- end -}}

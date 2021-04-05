@@ -1,7 +1,7 @@
 replicaCount: 1
 
 image:
-  repository: ubiviushub/microservice-template
+  repository: ubiviushub/microservice-authentication
   tag: 0.0.0
   pullPolicy: Always
 
@@ -9,18 +9,18 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
-readinessProbe:
-  httpGet:
-    path: /products # TODO: Change for /health
-    port: 9090
+# readinessProbe:
+#   httpGet:
+#     path: /signup # TODO: Change for /health
+#     port: 9090
 
-livenessProbe:
-  httpGet:
-    path: /products # TODO: Change for /health
-    port: 9090
-  initialDelaySeconds: 60
-  timeoutSeconds: 30
-  failureThreshold: 10
+# livenessProbe:
+#   httpGet:
+#     path: /signup # TODO: Change for /health
+#     port: 9090
+#   initialDelaySeconds: 60
+#   timeoutSeconds: 30
+#   failureThreshold: 10
 
 serviceAccount:
  # Specifies whether a service account should be created

@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "microservice-template.fullname" . }}
+  name: {{ template "microservice-authentication.fullname" . }}
   namespace: {{ .Release.Namespace }}
   labels:
-    app: {{ template "microservice-template.name" . }}
-    chart: {{ template "microservice-template.chart" . }}
+    app: {{ template "microservice-authentication.name" . }}
+    chart: {{ template "microservice-authentication.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
     {{- with .Values.service.labels }}
@@ -39,4 +39,4 @@ spec:
 {{ toYaml .Values.extraPorts | indent 4}}
 {{- end }}
   selector:
-    {{- include "microservice-template.selectorLabels" . | nindent 4 }}
+    {{- include "microservice-authentication.selectorLabels" . | nindent 4 }}
