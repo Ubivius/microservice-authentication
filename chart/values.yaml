@@ -9,18 +9,18 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
-# readinessProbe:
-#   httpGet:
-#     path: /signup # TODO: Change for /health
-#     port: 9090
+readinessProbe:
+  httpGet:
+    path: /health/ready
+    port: 9090
 
-# livenessProbe:
-#   httpGet:
-#     path: /signup # TODO: Change for /health
-#     port: 9090
-#   initialDelaySeconds: 60
-#   timeoutSeconds: 30
-#   failureThreshold: 10
+livenessProbe:
+  httpGet:
+    path: /health/live
+    port: 9090
+  initialDelaySeconds: 60
+  timeoutSeconds: 30
+  failureThreshold: 10
 
 serviceAccount:
  # Specifies whether a service account should be created
@@ -43,7 +43,7 @@ securityContext: {}
   # runAsUser: 1000
 
 service:
-  type: ClusterIP
+  type: LoadBalancer
   port: 9090
 
 ingress:
