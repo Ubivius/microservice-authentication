@@ -1,18 +1,11 @@
 package handlers
 
 import (
-	"log"
 	"net/http"
 	"net/http/httptest"
-	"os"
 	"strings"
 	"testing"
 )
-
-// Move to util package in Sprint 9, should be a testing specific logger
-func NewTestLogger() *log.Logger {
-	return log.New(os.Stdout, "Tests", log.LstdFlags)
-}
 
 func TestSignInIntegration(t *testing.T) {
 	if testing.Short() {
@@ -25,7 +18,7 @@ func TestSignInIntegration(t *testing.T) {
 	request.Header.Add("Content-Type", "application/json")
 	response := httptest.NewRecorder()
 
-	productHandler := NewAuthHandler(NewTestLogger())
+	productHandler := NewAuthHandler()
 	productHandler.SignIn(response, request)
 
 	if response.Code != 200 {

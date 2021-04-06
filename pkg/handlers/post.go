@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"io/ioutil"
-	"log"
 	"net/http"
 
 	"github.com/Ubivius/microservice-authentication/pkg/data"
@@ -10,7 +9,8 @@ import (
 
 // SignIn will fetch the acces token from Keycloak and return user data
 func (authHandler *AuthHandler) SignIn(responseWriter http.ResponseWriter, request *http.Request) {
-
+	
+	log.Info("SignIn request")
 	requestBody, _ := ioutil.ReadAll(request.Body)
 
 	//SignIn request
@@ -35,11 +35,12 @@ func (authHandler *AuthHandler) SignIn(responseWriter http.ResponseWriter, reque
 // SignUp will register a new user in keycloak and in our user database
 func (authHandler *AuthHandler) SignUp(responseWriter http.ResponseWriter, request *http.Request) {
 
+	log.Info("SignUp request")
 	requestBody, _ := ioutil.ReadAll(request.Body)
 
 	signupStatus, admin_token := data.SignUpRequest(requestBody)
 
-	log.Println("response Status:", signupStatus)
+	log.Info("response Status:", signupStatus)
 
 	if signupStatus == "409 Conflict" {
 		responseWriter.WriteHeader(http.StatusConflict)
