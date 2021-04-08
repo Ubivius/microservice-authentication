@@ -17,19 +17,19 @@ func (authHandler *AuthHandler) ReadinessCheck(responseWriter http.ResponseWrite
 	log.Info("ReadinessCheck")
 
 	readinessProbeKeycloak := data.KeycloakPath + "/auth/realms/master"
-	readinessProbeMicroserviceUser := data.MicroserviceUserPath + "/health/ready"
+	_, err := http.Get(readinessProbeKeycloak)
 
-	_, errKeycloak := http.Get(readinessProbeKeycloak)
-	_, errMicroserviceUser := http.Get(readinessProbeMicroserviceUser)
-
-	if errKeycloak != nil {
-		log.Error(errKeycloak, "Keycloak unavailable")
+	if err != nil {
+		log.Error(err, "Keycloak unavailable")
 		http.Error(responseWriter, "Keycloak unavailable", http.StatusServiceUnavailable)
 		return
 	}
 
-	if errMicroserviceUser != nil {
-		log.Error(errMicroserviceUser, "Microservice-user unavailable")
+	readinessProbeMicroserviceUser := data.MicroserviceUserPath + "/health/ready"
+	_, err = http.Get(readinessProbeMicroserviceUser)
+
+	if err != nil {
+		log.Error(err, "Microservice-user unavailable")
 		http.Error(responseWriter, "Microservice-user unavailable", http.StatusServiceUnavailable)
 		return
 	}
