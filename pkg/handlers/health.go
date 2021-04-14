@@ -8,14 +8,11 @@ import (
 
 // LivenessCheck determine when the application needs to be restarted
 func (authHandler *AuthHandler) LivenessCheck(responseWriter http.ResponseWriter, request *http.Request) {
-	log.Info("LivenessCheck")
 	responseWriter.WriteHeader(http.StatusOK)
 }
 
 //ReadinessCheck verifies that the application is ready to accept requests
 func (authHandler *AuthHandler) ReadinessCheck(responseWriter http.ResponseWriter, request *http.Request) {
-	log.Info("ReadinessCheck")
-
 	readinessProbeKeycloak := data.KeycloakPath + "/auth/realms/master"
 	_, err := http.Get(readinessProbeKeycloak)
 
