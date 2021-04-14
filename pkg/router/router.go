@@ -1,7 +1,6 @@
 package router
 
 import (
-	"log"
 	"net/http"
 
 	"github.com/Ubivius/microservice-authentication/pkg/handlers"
@@ -9,7 +8,8 @@ import (
 )
 
 // Mux route handling with gorilla/mux
-func New(authHandler *handlers.AuthHandler, logger *log.Logger) *mux.Router {
+func New(authHandler *handlers.AuthHandler) *mux.Router {
+	log.Info("Starting router")
 	router := mux.NewRouter()
 
 	// Post router

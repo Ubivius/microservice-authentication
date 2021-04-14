@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"net/url"
 	"regexp"
@@ -170,7 +169,7 @@ func GetAdminAccessToken() string {
 	}
 	defer resp.Body.Close()
 
-	log.Println("Admintoken response Status:", resp.Status)
+	log.Info("Admintoken response Status:", resp.Status)
 	body, _ := ioutil.ReadAll(resp.Body)
 	admin_token := ExtractValue(string(body), "access_token")
 	return admin_token
@@ -204,7 +203,7 @@ func ExtractClaims(tokenString string) jwt.MapClaims {
 	claims := jwt.MapClaims{}
 	_, err := jwt.ParseWithClaims(tokenString, claims, nil)
 	if err != nil {
-		log.Println("Error while getting claims: ", err)
+		log.Error(err, "Error while getting claims")
 	}
 	return claims
 }
