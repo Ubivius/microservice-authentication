@@ -12,11 +12,11 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
-const keycloakPath = "http://keycloak:8080"
-const microserviceUserPath = "http://microservice-user:9090"
+const KeycloakPath = "http://keycloak:8080"
+const MicroserviceUserPath = "http://microservice-user:9090"
 
 func SignInRequest(requestBody []byte) []byte {
-	signinPath := keycloakPath + "/auth/realms/ubivius/protocol/openid-connect/token"
+	signinPath := KeycloakPath + "/auth/realms/ubivius/protocol/openid-connect/token"
 
 	username := ExtractValue(string(requestBody), "username")
 	password := ExtractValue(string(requestBody), "password")
@@ -46,7 +46,7 @@ func SignInRequest(requestBody []byte) []byte {
 }
 
 func SignUpRequest(requestBody []byte) (string, string) {
-	newUserPath := keycloakPath + "/auth/admin/realms/ubivius/users"
+	newUserPath := KeycloakPath + "/auth/admin/realms/ubivius/users"
 
 	playerData := ExtractPlayerData(requestBody)
 	jsonValues := AddValueToList(playerData, "enabled", "true")
@@ -71,7 +71,7 @@ func SignUpRequest(requestBody []byte) (string, string) {
 }
 
 func AddNewUser(playerId string, requestBody []byte) {
-	addUserPath := microserviceUserPath + "/users"
+	addUserPath := MicroserviceUserPath + "/users"
 
 	jsonValues := ExtractPlayerData(requestBody)
 
@@ -91,7 +91,7 @@ func AddNewUser(playerId string, requestBody []byte) {
 }
 
 func SetUserPassword(playerId string, password string, admin_token string) {
-	userSetPasswordPath := keycloakPath + "/auth/admin/realms/ubivius/users/" + playerId + "/reset-password"
+	userSetPasswordPath := KeycloakPath + "/auth/admin/realms/ubivius/users/" + playerId + "/reset-password"
 
 	values := map[string]string{"type": "password", "temporary": "false", "value": password}
 	jsonValues, _ := json.Marshal(values)
@@ -110,7 +110,7 @@ func SetUserPassword(playerId string, password string, admin_token string) {
 	defer resp.Body.Close()
 }
 func GetUser(userId string) []byte {
-	userPath := microserviceUserPath + "/users/" + userId
+	userPath := MicroserviceUserPath + "/users/" + userId
 
 	req, err := http.NewRequest("GET", userPath, nil)
 	if err != nil {
@@ -129,7 +129,7 @@ func GetUser(userId string) []byte {
 }
 
 func GetUserId(username string, admin_token string) string {
-	userIdPath := keycloakPath + "/auth/admin/realms/ubivius/users?username=" + username
+	userIdPath := KeycloakPath + "/auth/admin/realms/ubivius/users?username=" + username
 
 	req, err := http.NewRequest("GET", userIdPath, nil)
 	if err != nil {
@@ -150,7 +150,7 @@ func GetUserId(username string, admin_token string) string {
 }
 
 func GetAdminAccessToken() string {
-	adminAccessPath := keycloakPath + "/auth/realms/ubivius/protocol/openid-connect/token"
+	adminAccessPath := KeycloakPath + "/auth/realms/ubivius/protocol/openid-connect/token"
 
 	data := url.Values{}
 	data.Set("client_id", "ubivius-client")
