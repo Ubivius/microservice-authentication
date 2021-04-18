@@ -73,7 +73,11 @@ func SignUpRequest(requestBody []byte) (string, string) {
 func AddNewUser(playerId string, requestBody []byte) {
 	addUserPath := MicroserviceUserPath + "/users"
 
-	jsonValues := ExtractPlayerData(requestBody)
+	requestBodyJson := ExtractPlayerData(requestBody)
+
+	dateofbirth := ExtractValue(string(requestBody), "dateofbirth")
+
+	jsonValues := AddValueToList(requestBodyJson, "dateofbirth", dateofbirth)
 
 	newPlayer := AddValueToList(jsonValues, "id", playerId)
 
@@ -169,7 +173,7 @@ func GetAdminAccessToken() string {
 	}
 	defer resp.Body.Close()
 
-	log.Info("Admintoken response Status:", resp.Status)
+	log.Info("Admintoken response:", "status", resp.Status)
 	body, _ := ioutil.ReadAll(resp.Body)
 	admin_token := ExtractValue(string(body), "access_token")
 	return admin_token
@@ -203,7 +207,7 @@ func ExtractClaims(tokenString string) jwt.MapClaims {
 	claims := jwt.MapClaims{}
 	_, err := jwt.ParseWithClaims(tokenString, claims, nil)
 	if err != nil {
-		log.Error(err, "Error while getting claims")
+		log.Info("Error while getting claims", "error", err)
 	}
 	return claims
 }

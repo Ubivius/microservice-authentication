@@ -9,7 +9,7 @@ import (
 
 // SignIn will fetch the acces token from Keycloak and return user data
 func (authHandler *AuthHandler) SignIn(responseWriter http.ResponseWriter, request *http.Request) {
-	
+
 	log.Info("SignIn request")
 	requestBody, _ := ioutil.ReadAll(request.Body)
 
@@ -40,7 +40,7 @@ func (authHandler *AuthHandler) SignUp(responseWriter http.ResponseWriter, reque
 
 	signupStatus, admin_token := data.SignUpRequest(requestBody)
 
-	log.Info("response Status:", signupStatus)
+	log.Info("SignUp Response:", "status", signupStatus)
 
 	if signupStatus == "409 Conflict" {
 		responseWriter.WriteHeader(http.StatusConflict)
