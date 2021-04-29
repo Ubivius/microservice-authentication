@@ -1,4 +1,4 @@
-# microservice-authentication Helm Charts
+# Microservice-Authentication Helm Charts
 
 ## Usage
 
