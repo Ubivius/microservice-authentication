@@ -1,6 +1,7 @@
 # BUILD_TYPE can have these values: local, test or prod
 # if BUILD_TYPE is empty, set to local
 ARG BUILD_TYPE=local
+
 FROM golang:stretch as build-env
 COPY . ./src
 RUN apt update
@@ -14,7 +15,7 @@ RUN echo "First Docker build-stage is now done"
 
 FROM gcr.io/distroless/base as prod
 
-FROM golang:alpine as test
+FROM golang:stretch as test
 
 FROM golang:stretch as local
 

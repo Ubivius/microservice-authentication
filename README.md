@@ -1,9 +1,30 @@
-# microservice-template
-Template for microservices.
+# microservice-authentication
+Microservice to Sign in and Sign up users to [Keycloak](https://github.com/Ubivius/deploy-keycloak)
 
-This template can be used to create another microservice without having to write any of the boilerplate code.
+## Authentication endpoints
 
-**Launch local ElasticSearch**
-----
-  Run the elasticsearch.sh script to start a local ElasticSearch DB in a docker container.
-  You can validate if it is running at localhost:9200 in your browser.
+`GET` `/health/live` Returns a Status OK when live.
+
+`GET` `/health/ready` Returns a Status OK when ready or an error when dependencies are not available.
+
+`POST` `/signin` Signs in a user with their credentials and returns an access token along with the user's information. </br>
+__Data Params__
+```json
+{
+  "username": "string, required",
+  "password": "string, required",
+}
+```
+
+`POST` `/signup` Add a user with their credentials in [Keycloak](https://github.com/Ubivius/deploy-keycloak) and create a new user with [microservice-user](https://github.com/Ubivius/microservice-user). </br>
+__Data Params__
+```json
+{
+  "username":    "string, required",
+  "password":    "string, required",
+  "firstname":   "string, required",
+  "lastname":    "string, required",
+  "email":       "string, required",
+  "dateofbirth": "string, required",
+}
+```

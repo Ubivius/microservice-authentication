@@ -1,35 +1,26 @@
 package router
 
 import (
-	"log"
 	"net/http"
 
-	"github.com/Ubivius/microservice-template/pkg/handlers"
+	"github.com/Ubivius/microservice-authentication/pkg/handlers"
 	"github.com/gorilla/mux"
 )
 
 // Mux route handling with gorilla/mux
-func New(productHandler *handlers.ProductsHandler, logger *log.Logger) *mux.Router {
+func New(authHandler *handlers.AuthHandler) *mux.Router {
+	log.Info("Starting router")
 	router := mux.NewRouter()
 
-	// Get Router
+	//Health Check
 	getRouter := router.Methods(http.MethodGet).Subrouter()
-	getRouter.HandleFunc("/products", productHandler.GetProducts)
-	getRouter.HandleFunc("/products/{id:[0-9]+}", productHandler.GetProductByID)
-
-	// Put router
-	putRouter := router.Methods(http.MethodPut).Subrouter()
-	putRouter.HandleFunc("/products", productHandler.UpdateProducts)
-	putRouter.Use(productHandler.MiddlewareProductValidation)
+	getRouter.HandleFunc("/health/live", authHandler.LivenessCheck)
+	getRouter.HandleFunc("/health/ready", authHandler.ReadinessCheck)
 
 	// Post router
 	postRouter := router.Methods(http.MethodPost).Subrouter()
-	postRouter.HandleFunc("/products", productHandler.AddProduct)
-	postRouter.Use(productHandler.MiddlewareProductValidation)
-
-	// Delete router
-	deleteRouter := router.Methods(http.MethodDelete).Subrouter()
-	deleteRouter.HandleFunc("/products/{id:[0-9]+}", productHandler.Delete)
+	postRouter.HandleFunc("/signin", authHandler.SignIn)
+	postRouter.HandleFunc("/signup", authHandler.SignUp)
 
 	return router
 }
