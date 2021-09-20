@@ -1,0 +1,24 @@
+{{- if .Values.ingressRoute.enabled -}}
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: {{ template "microservice-authentication.fullname" . }}-ingressroute
+spec:
+  entryPoints:
+    - web
+  routes:
+    - match: Host(`auth.anon.dev.ubivius.tk`) && PathPrefix(`/`)
+      kind: Rule
+      services:
+        - name: {{ template "microservice-authentication.fullname" . }}
+          kind: Service
+          port: {{ .Values.service.port }}
+          namespace: {{ .Release.Namespace }}
+    {{- if .Values.ingressRoute.middlewares }}
+      middlewares:
+      {{- range .Values.ingressRoute.middlewares }}
+        - name: {{ .name }}
+          namespace: default
+      {{- end }}
+    {{- end }}
+{{- end }}     
