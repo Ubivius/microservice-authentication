@@ -7,7 +7,7 @@ spec:
   entryPoints:
     - web
   routes:
-    - match: Host(`auth.anon.dev.ubivius.tk`) && PathPrefix(`/`)
+    - match: {{ .Values.ingressRoute.match }}
       kind: Rule
       services:
         - name: {{ template "microservice-authentication.fullname" . }}
