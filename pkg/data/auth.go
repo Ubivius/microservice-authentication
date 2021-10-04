@@ -51,7 +51,7 @@ type KeycloakUser struct {
 	Email        string `json:"email"`
 	FirstName    string `json:"firstName"`
 	LastName     string `json:"lastName"`
-	Enabled      bool	`json:"enabled"`	
+	Enabled      bool   `json:"enabled"`	
 }
 
 /* Claims Map 
