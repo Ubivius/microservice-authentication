@@ -35,7 +35,7 @@ type TokenResponse struct {
 type User struct {
 	ID           string `json:"id" bson:"_id"`
 	Username     string `json:"username"`
-	Password	 string `json:"password"`
+	Password     string `json:"password"`
 	Email        string `json:"email"`
 	FirstName    string `json:"firstname"`
 	LastName     string `json:"lastname"`
