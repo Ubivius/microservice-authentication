@@ -54,26 +54,6 @@ type KeycloakUser struct {
 	Enabled      bool   `json:"enabled"`	
 }
 
-/* Claims Map 
-	AuthContextClassReference  acr
-	AuthorizedParty            azp
-	Email                      email
-	EmailVerified              email_verified
-	ExpirationTime             exp
-	LastName                   family_name
-	FirstName                  given_name
-	IssuedAt                   iat
-	Issuer                     iss
-	JwtID                      jti
-	FullName                   name
-	Username                   preferred_username
-	Scope                      scope
-	SessionState               session_state
-	SessionID                  sid
-	Subject                    sub
-	Type                       typ
-*/
-
 // ErrorEnvVar : Environment variable error
 var ErrorEnvVar = fmt.Errorf("missing environment variable")
 
@@ -250,9 +230,6 @@ func UserToKeycloakUser(user User) KeycloakUser {
 func ExtractClaims(tokenString string) jwt.MapClaims {
 	claims := jwt.MapClaims{}
 	_, err := jwt.ParseWithClaims(tokenString, claims, nil)
-//	_, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
-//		return []byte("PUBLIC KEY"), nil
-//	})
 	if err != nil {
 		log.Info("Error while getting claims", "error", err)
 	}
