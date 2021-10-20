@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"io/ioutil"
+	"encoding/json"
 	"net/http"
 
 	"github.com/Ubivius/microservice-authentication/pkg/data"
@@ -11,19 +11,17 @@ import (
 func (authHandler *AuthHandler) SignIn(responseWriter http.ResponseWriter, request *http.Request) {
 
 	log.Info("SignIn request")
-	requestBody, _ := ioutil.ReadAll(request.Body)
+
+	//Extract credentials
+	var credentials data.Credentials
+	errorCreds := json.NewDecoder(request.Body).Decode(&credentials)
+    if errorCreds != nil {
+        http.Error(responseWriter, errorCreds.Error(), http.StatusBadRequest)
+        return
+    }
 
 	//SignIn request
-	signInBody := data.SignInRequest(requestBody)
-
-	//Get access token
-	access_token := data.ExtractValue(string(signInBody), "access_token")
-
-	//Get user data
-	claims := data.ExtractClaims(access_token)
-	userId := claims["sub"]
-	userBody := data.GetUser(userId.(string))
-	player := data.AddValueToList(userBody, "accessToken", access_token)
+	player := data.SignInRequest(credentials)
 
 	responseWriter.WriteHeader(http.StatusOK)
 	_, err := responseWriter.Write(player)
@@ -36,9 +34,18 @@ func (authHandler *AuthHandler) SignIn(responseWriter http.ResponseWriter, reque
 func (authHandler *AuthHandler) SignUp(responseWriter http.ResponseWriter, request *http.Request) {
 
 	log.Info("SignUp request")
-	requestBody, _ := ioutil.ReadAll(request.Body)
 
-	signupStatus, admin_token := data.SignUpRequest(requestBody)
+	//Extract user info
+	var user data.User
+	errorUser := json.NewDecoder(request.Body).Decode(&user)
+    if errorUser != nil {
+        http.Error(responseWriter, errorUser.Error(), http.StatusBadRequest)
+        return
+    }
+
+	//SignUp request
+	admin_token := data.GetAdminAccessToken()
+	signupStatus := data.SignUpRequest(user, admin_token)
 
 	log.Info("SignUp Response:", "status", signupStatus)
 
@@ -56,13 +63,4 @@ func (authHandler *AuthHandler) SignUp(responseWriter http.ResponseWriter, reque
 	if err != nil {
 		panic(err)
 	}
-
-	//Get user Id
-	playerId := data.GetUserId(data.ExtractValue(string(requestBody), "username"), admin_token)
-
-	//Set user password
-	data.SetUserPassword(playerId, data.ExtractValue(string(requestBody), "password"), admin_token)
-
-	//Add new user
-	data.AddNewUser(playerId, requestBody)
 }

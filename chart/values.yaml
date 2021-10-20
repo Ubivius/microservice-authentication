@@ -22,6 +22,18 @@ livenessProbe:
   timeoutSeconds: 30
   failureThreshold: 10
 
+env:
+  - name: KEYCLOAK_ADMIN_USER
+    valueFrom:
+      configMapKeyRef:
+        name: keycloak-env-vars
+        key: KEYCLOAK_ADMIN_USER
+  - name: KEYCLOAK_ADMIN_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: keycloak
+        key: admin-password
+
 serviceAccount:
  # Specifies whether a service account should be created
   create: true
@@ -46,15 +58,11 @@ service:
   type: ClusterIP
   port: 9090
 
-ingress:
+ingressRoute:
   enabled: true
-  annotations: {}
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
-  hosts:
-    - host: auth.anon.dev.ubivius.tk
-      paths:
-        - path: /
+  match: Host(`auth.anon.dev.ubivius.tk`) && PathPrefix(`/`)
+  middlewares:
+    - name: cors-header
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
