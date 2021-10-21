@@ -28,3 +28,25 @@ __Data Params__
   "dateofbirth": "string, required",
 }
 ```
+
+__JWT Claims__
+```
+	AuthContextClassReference  acr
+	AuthorizedParty            azp
+	Email                      email
+	EmailVerified              email_verified
+	ExpirationTime             exp
+	LastName                   family_name
+	FirstName                  given_name
+	IssuedAt                   iat
+	Issuer                     iss
+	JwtID                      jti
+	FullName                   name
+	Username                   preferred_username
+	Scope                      scope
+	SessionState               session_state
+	SessionID                  sid
+	Subject                    sub
+	Type                       typ
+```
+
