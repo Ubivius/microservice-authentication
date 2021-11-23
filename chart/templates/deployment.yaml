@@ -32,10 +32,7 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
-            - name: http
-              containerPort: 9090
               containerPort: {{ .Values.service.port }}
-              protocol: TCP
               protocol: TCP
 {{- range .Values.service.otherPorts }}          
             - name: {{ .name }}
