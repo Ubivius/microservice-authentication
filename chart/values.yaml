@@ -64,9 +64,7 @@ ingressRoute:
   middlewares:
     - name: cors-header
   tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
+    secretName: authentication.anon.dev.ubivius.tk
 
 resources:
   requests:
