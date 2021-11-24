@@ -21,4 +21,6 @@ spec:
           namespace: default
       {{- end }}
     {{- end }}
+  tls:
+    secretName: {{ .Values.ingressRoute.tls.secretName }}
 {{- end }}     

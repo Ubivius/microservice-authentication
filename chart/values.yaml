@@ -63,7 +63,7 @@ ingressRoute:
   match: Host(`authentication.anon.dev.ubivius.tk`) && PathPrefix(`/`)
   middlewares:
     - name: cors-header
-  tls: []
+  tls:
     secretName: authentication.anon.dev.ubivius.tk
 
 resources:
