@@ -6,6 +6,7 @@ metadata:
 spec:
   entryPoints:
     - web
+    - websecure
   routes:
     - match: {{ .Values.ingressRoute.match }}
       kind: Rule
@@ -21,4 +22,6 @@ spec:
           namespace: default
       {{- end }}
     {{- end }}
+  tls:
+    secretName: {{ .Values.ingressRoute.tls.secretName }}
 {{- end }}     

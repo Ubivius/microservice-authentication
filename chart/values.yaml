@@ -71,10 +71,8 @@ ingressRoute:
   match: Host(`authentication.anon.dev.ubivius.tk`) && PathPrefix(`/`)
   middlewares:
     - name: cors-header
-  tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
+  tls:
+    secretName: authentication.anon.dev.ubivius.tk
 
 resources:
   requests:
